@@ -1,5 +1,6 @@
 
 import time
+import sys
 
 def controlar_tiempo(func):
     def wrapper(*args, **kwargs):
@@ -13,11 +14,23 @@ def controlar_tiempo(func):
         print(f"tiempo de ejecucion: {horas} horas, {minutos} minutos, {segundos} segundos")
     return wrapper
 
+def log_en_archivo(func):
+    def wrapper(*args, **kwargs):
+        sys.stdout=open(func.__name__+".txt", "w")
+        func(*args, **kwargs)
+        sys.stdout.close()
+    return wrapper
+
+
 if __name__ == "__main__":
-            
+    @log_en_archivo
+    def test_log():
+        print("probando este decorador")
+        
     @controlar_tiempo
     def test_tiempo():
         time.sleep(5)
         print("probando este decorador")
 
+    test_log()
     test_tiempo()
